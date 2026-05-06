@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketplace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+  <!-- Header / Navbar -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+          </div>
+          <span class="text-xl font-bold text-gray-900">Marketplace</span>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-xl mx-8">
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+            <input
+              type="search"
+              id="search-input"
+              placeholder="Buscar produtos..."
+              class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl bg-gray-50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
+              oninput="filterProducts(this.value)"
+            />
+          </div>
+        </div>
+
+        <!-- Nav Actions -->
+        <div class="flex items-center gap-4">
+          <button class="text-gray-600 hover:text-gray-900 text-sm font-medium transition">Entrar</button>
+          <button
+            class="relative bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition"
+            onclick="toggleCart()"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            Carrinho
+            <span id="cart-count"
+              class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+              0
+            </span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Category Filter -->
+  <div class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex gap-2 py-3 overflow-x-auto scrollbar-hide">
+        <button onclick="filterCategory('all')"
+          class="category-btn active shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border transition"
+          data-category="all">
+          Todos
+        </button>
+        <button onclick="filterCategory('calçados')"
+          class="category-btn shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-brand-500 hover:text-brand-600 transition"
+          data-category="calçados">
+          Calçados
+        </button>
+        <button onclick="filterCategory('vestuário')"
+          class="category-btn shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-brand-500 hover:text-brand-600 transition"
+          data-category="vestuário">
+          Vestuário
+        </button>
+        <button onclick="filterCategory('acessórios')"
+          class="category-btn shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-brand-500 hover:text-brand-600 transition"
+          data-category="acessórios">
+          Acessórios
+        </button>
+        <button onclick="filterCategory('eletrônicos')"
+          class="category-btn shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-brand-500 hover:text-brand-600 transition"
+          data-category="eletrônicos">
+          Eletrônicos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Results Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Produtos</h1>
+        <p class="text-sm text-gray-500 mt-1"><span id="result-count">8</span> produtos encontrados</p>
+      </div>
+      <select class="text-sm border border-gray-200 rounded-lg px-3 py-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <option>Mais relevantes</option>
+        <option>Menor preço</option>
+        <option>Maior preço</option>
+        <option>Mais novos</option>
+      </select>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="hidden flex flex-col items-center justify-center py-24 text-center">
+      <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <p class="text-gray-400 text-lg font-medium">Nenhum produto encontrado</p>
+      <p class="text-gray-400 text-sm mt-1">Tente uma busca diferente</p>
+    </div>
+
+  </main>
+
+  <!-- Cart Sidebar -->
+  <div id="cart-overlay" class="fixed inset-0 bg-black/40 z-40 hidden" onclick="toggleCart()"></div>
+  <aside id="cart-sidebar"
+    class="fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+
+    <div class="flex items-center justify-between p-5 border-b border-gray-100">
+      <h2 class="text-lg font-bold text-gray-900">Meu Carrinho</h2>
+      <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4">
+      <div id="cart-empty" class="flex flex-col items-center justify-center h-full text-center text-gray-400">
+        <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        <p class="font-medium">Carrinho vazio</p>
+        <p class="text-sm mt-1">Adicione produtos para continuar</p>
+      </div>
+    </div>
+
+    <div id="cart-footer" class="hidden p-5 border-t border-gray-100 space-y-4">
+      <div class="flex justify-between text-sm text-gray-500">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">R$ 0,00</span>
+      </div>
+      <div class="flex justify-between font-bold text-gray-900">
+        <span>Total</span>
+        <span id="cart-total">R$ 0,00</span>
+      </div>
+      <button
+        class="w-full bg-brand-500 hover:bg-brand-600 text-white py-3 rounded-xl font-semibold text-sm transition"
+        onclick="checkout()">
+        Finalizar Pedido
+      </button>
+      <button
+        class="w-full text-gray-500 hover:text-gray-700 py-2 text-sm font-medium transition"
+        onclick="toggleCart()">
+        Continuar comprando
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Toast Notification -->
+  <div id="toast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-xl text-sm font-medium shadow-lg z-50 opacity-0 transition-opacity duration-300 pointer-events-none">
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+      <div class="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Pedido Confirmado!</h3>
+      <p class="text-gray-500 text-sm mb-2">Seu pedido foi recebido com sucesso.</p>
+      <p class="text-xs text-gray-400 mb-6">
+        Em produção, o <code class="bg-gray-100 px-1 rounded">order-service</code> validaria estoque via
+        <code class="bg-gray-100 px-1 rounded">product-service</code> e registraria o pedido.
+      </p>
+      <div id="checkout-total" class="text-2xl font-bold text-brand-600 mb-6"></div>
+      <button
+        onclick="closeCheckout()"
+        class="bg-brand-500 hover:bg-brand-600 text-white px-8 py-3 rounded-xl font-semibold transition">
+        Voltar à loja
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ── Mock Data (substitui chamada GET /api/v1/products) ──────────────────
+    const MOCK_PRODUCTS = [
+      {
+        id: '7b3f2a1c-d4e5-4f6a-b7c8-9d0e1f2a3b4c',
+        name: 'Tênis Running Pro',
+        description: 'Tênis leve e responsivo para corridas longas em asfalto.',
+        price: 299.90,
+        stock_quantity: 12,
+        sku: 'TNS-RUN-001',
+        category: 'calçados',
+        badge: 'Mais vendido',
+        emoji: '👟'
+      },
+      {
+        id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+        name: 'Meia Esportiva Premium',
+        description: 'Meia com tecnologia anti-bolha e absorção de impacto.',
+        price: 49.90,
+        stock_quantity: 80,
+        sku: 'MEI-ESP-001',
+        category: 'acessórios',
+        badge: null,
+        emoji: '🧦'
+      },
+      {
+        id: 'b2c3d4e5-f6a7-8901-bcde-f12345678901',
+        name: 'Camiseta Dry Fit',
+        description: 'Tecido que afasta a umidade do corpo durante exercícios intensos.',
+        price: 89.90,
+        stock_quantity: 35,
+        sku: 'CAM-DRY-001',
+        category: 'vestuário',
+        badge: 'Novo',
+        emoji: '👕'
+      },
+      {
+        id: 'c3d4e5f6-a7b8-9012-cdef-123456789012',
+        name: 'Short de Compressão',
+        description: 'Compressão muscular ideal para ciclismo e musculação.',
+        price: 129.90,
+        stock_quantity: 20,
+        sku: 'SHT-CMP-001',
+        category: 'vestuário',
+        badge: null,
+        emoji: '🩲'
+      },
+      {
+        id: 'd4e5f6a7-b8c9-0123-defa-234567890123',
+        name: 'Smartwatch Fitness',
+        description: 'Monitor de frequência cardíaca, GPS e 7 dias de bateria.',
+        price: 799.00,
+        stock_quantity: 8,
+        sku: 'SMW-FIT-001',
+        category: 'eletrônicos',
+        badge: 'Premium',
+        emoji: '⌚'
+      },
+      {
+        id: 'e5f6a7b8-c9d0-1234-efab-345678901234',
+        name: 'Garrafa Térmica 1L',
+        description: 'Mantém a temperatura por 24h. BPA-free, ideal para academia.',
+        price: 119.90,
+        stock_quantity: 45,
+        sku: 'GAR-TRM-001',
+        category: 'acessórios',
+        badge: null,
+        emoji: '🍶'
+      },
+      {
+        id: 'f6a7b8c9-d0e1-2345-fabc-456789012345',
+        name: 'Fone Bluetooth Sport',
+        description: 'Resistente a suor, som cristalino e bateria de 8h.',
+        price: 249.90,
+        stock_quantity: 3,
+        sku: 'FON-BLT-001',
+        category: 'eletrônicos',
+        badge: 'Últimas unidades',
+        emoji: '🎧'
+      },
+      {
+        id: 'a7b8c9d0-e1f2-3456-abcd-567890123456',
+        name: 'Mochila Esportiva 30L',
+        description: 'Impermeável, compartimento para notebook e saída para fone.',
+        price: 189.90,
+        stock_quantity: 15,
+        sku: 'MOC-ESP-001',
+        category: 'acessórios',
+        badge: null,
+        emoji: '🎒'
+      }
+    ]
+
+    // ── State ───────────────────────────────────────────────────────────────
+    let cart = []
+    let filteredProducts = [...MOCK_PRODUCTS]
+    let activeCategory = 'all'
+    let searchQuery = ''
+
+    // ── Render ──────────────────────────────────────────────────────────────
+    function renderProducts(products) {
+      const grid = document.getElementById('product-grid')
+      const empty = document.getElementById('empty-state')
+      const count = document.getElementById('result-count')
+
+      count.textContent = products.length
+
+      if (products.length === 0) {
+        grid.innerHTML = ''
+        empty.classList.remove('hidden')
+        return
+      }
+
+      empty.classList.add('hidden')
+
+      grid.innerHTML = products.map(p => {
+        const lowStock = p.stock_quantity <= 5
+        const outOfStock = p.stock_quantity === 0
+
+        return `
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col overflow-hidden group">
+
+          <!-- Product Image Placeholder -->
+          <div class="relative bg-gradient-to-br from-gray-50 to-gray-100 h-48 flex items-center justify-center">
+            <span class="text-6xl">${p.emoji}</span>
+            ${p.badge ? `
+              <span class="absolute top-3 left-3 bg-brand-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                ${p.badge}
+              </span>` : ''}
+            ${lowStock && !outOfStock ? `
+              <span class="absolute top-3 right-3 bg-orange-100 text-orange-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                Só ${p.stock_quantity} restantes
+              </span>` : ''}
+            ${outOfStock ? `
+              <div class="absolute inset-0 bg-white/70 flex items-center justify-center">
+                <span class="text-gray-400 font-semibold text-sm">Esgotado</span>
+              </div>` : ''}
+          </div>
+
+          <!-- Product Info -->
+          <div class="p-4 flex flex-col flex-1">
+            <span class="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">${p.category}</span>
+            <h3 class="font-semibold text-gray-900 text-sm leading-snug mb-1 line-clamp-2">${p.name}</h3>
+            <p class="text-xs text-gray-500 mb-3 line-clamp-2 flex-1">${p.description}</p>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-lg font-bold text-gray-900">
+                  R$ ${p.price.toFixed(2).replace('.', ',')}
+                </span>
+              </div>
+              <button
+                onclick="addToCart('${p.id}')"
+                ${outOfStock ? 'disabled' : ''}
+                class="flex items-center gap-1.5 ${outOfStock
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-brand-500 hover:bg-brand-600 text-white active:scale-95'
+                } px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4v16m8-8H4"/>
+                </svg>
+                ${outOfStock ? 'Esgotado' : 'Adicionar'}
+              </button>
+            </div>
+          </div>
+        </div>
+        `
+      }).join('')
+    }
+
+    // ── Filter Logic ────────────────────────────────────────────────────────
+    function applyFilters() {
+      filteredProducts = MOCK_PRODUCTS.filter(p => {
+        const matchCategory = activeCategory === 'all' || p.category === activeCategory
+        const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            p.description.toLowerCase().includes(searchQuery.toLowerCase())
+        return matchCategory && matchSearch
+      })
+      renderProducts(filteredProducts)
+    }
+
+    function filterCategory(cat) {
+      activeCategory = cat
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.category === cat)
+        btn.classList.toggle('bg-brand-500', btn.dataset.category === cat)
+        btn.classList.toggle('text-white', btn.dataset.category === cat)
+        btn.classList.toggle('border-brand-500', btn.dataset.category === cat)
+        btn.classList.toggle('text-gray-600', btn.dataset.category !== cat)
+        btn.classList.toggle('border-gray-200', btn.dataset.category !== cat)
+      })
+      applyFilters()
+    }
+
+    function filterProducts(query) {
+      searchQuery = query
+      applyFilters()
+    }
+
+    // ── Cart Logic ──────────────────────────────────────────────────────────
+    function addToCart(productId) {
+      const product = MOCK_PRODUCTS.find(p => p.id === productId)
+      if (!product) return
+
+      const existing = cart.find(i => i.id === productId)
+      if (existing) {
+        if (existing.quantity >= product.stock_quantity) {
+          showToast(`Estoque máximo atingido: ${product.stock_quantity} unidades`)
+          return
+        }
+        existing.quantity++
+      } else {
+        cart.push({ ...product, quantity: 1 })
+      }
+
+      updateCartUI()
+      showToast(`${product.name} adicionado ao carrinho`)
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(i => i.id !== productId)
+      updateCartUI()
+    }
+
+    function changeQty(productId, delta) {
+      const item = cart.find(i => i.id === productId)
+      if (!item) return
+      item.quantity += delta
+      if (item.quantity <= 0) removeFromCart(productId)
+      else updateCartUI()
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((sum, i) => sum + i.quantity, 0)
+      const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0)
+
+      document.getElementById('cart-count').textContent = count
+
+      const itemsEl = document.getElementById('cart-items')
+      const emptyEl = document.getElementById('cart-empty')
+      const footerEl = document.getElementById('cart-footer')
+
+      if (cart.length === 0) {
+        emptyEl.classList.remove('hidden')
+        footerEl.classList.add('hidden')
+        itemsEl.innerHTML = ''
+        itemsEl.appendChild(emptyEl)
+        return
+      }
+
+      emptyEl.classList.add('hidden')
+      footerEl.classList.remove('hidden')
+
+      itemsEl.innerHTML = cart.map(item => `
+        <div class="flex gap-3 items-start">
+          <div class="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center text-2xl shrink-0">
+            ${item.emoji}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 truncate">${item.name}</p>
+            <p class="text-xs text-gray-400">${item.category}</p>
+            <div class="flex items-center justify-between mt-2">
+              <div class="flex items-center gap-2">
+                <button onclick="changeQty('${item.id}', -1)"
+                  class="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition text-sm">−</button>
+                <span class="text-sm font-semibold w-4 text-center">${item.quantity}</span>
+                <button onclick="changeQty('${item.id}', 1)"
+                  class="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition text-sm">+</button>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-900">
+                  R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}
+                </span>
+                <button onclick="removeFromCart('${item.id}')"
+                  class="text-gray-300 hover:text-red-400 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('<hr class="border-gray-50"/>')
+
+      const fmt = v => `R$ ${v.toFixed(2).replace('.', ',')}`
+      document.getElementById('cart-subtotal').textContent = fmt(total)
+      document.getElementById('cart-total').textContent = fmt(total)
+    }
+
+    function toggleCart() {
+      const sidebar = document.getElementById('cart-sidebar')
+      const overlay = document.getElementById('cart-overlay')
+      const isOpen = !sidebar.classList.contains('translate-x-full')
+
+      if (isOpen) {
+        sidebar.classList.add('translate-x-full')
+        overlay.classList.add('hidden')
+      } else {
+        sidebar.classList.remove('translate-x-full')
+        overlay.classList.remove('hidden')
+      }
+    }
+
+    function checkout() {
+      if (cart.length === 0) return
+      const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0)
+      document.getElementById('checkout-total').textContent =
+        `Total: R$ ${total.toFixed(2).replace('.', ',')}`
+      document.getElementById('checkout-modal').classList.remove('hidden')
+      toggleCart()
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkout-modal').classList.add('hidden')
+      cart = []
+      updateCartUI()
+    }
+
+    // ── Toast ───────────────────────────────────────────────────────────────
+    function showToast(message) {
+      const toast = document.getElementById('toast')
+      toast.textContent = message
+      toast.classList.remove('opacity-0')
+      toast.classList.add('opacity-100')
+      setTimeout(() => {
+        toast.classList.remove('opacity-100')
+        toast.classList.add('opacity-0')
+      }, 2500)
+    }
+
+    // ── Init ────────────────────────────────────────────────────────────────
+    renderProducts(MOCK_PRODUCTS)
+
+    // Set initial active category style
+    document.querySelector('[data-category="all"]').classList.add(
+      'bg-brand-500', 'text-white', 'border-brand-500'
+    )
+  </script>
+</body>
+</html>
