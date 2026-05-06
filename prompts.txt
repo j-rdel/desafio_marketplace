@@ -1,0 +1,227 @@
+Você é um arquiteto de software sênior especialista em sistemas distribuídos, Python e Django Rest Framework.
+
+Sua tarefa é DEFINIR a arquitetura de um sistema de e-commerce simples baseado em microserviços, sem implementar código backend.
+
+O foco é: **decisão arquitetural, modelagem e documentação**.
+
+---
+
+## 🎯 OBJETIVO
+
+Projetar um sistema com arquitetura de microserviços contendo:
+
+* Serviço de Usuários
+* Serviço de Produtos
+* Serviço de Pedidos
+
+---
+
+## ⚠️ RESTRIÇÃO CRÍTICA
+
+* NÃO implementar código backend
+* NÃO gerar arquivos Django
+* NÃO escrever models, serializers ou views reais
+* Apenas definir arquitetura, contratos e estrutura
+
+---
+
+## 🧱 ARQUITETURA
+
+Definir:
+
+* Tipo: Microserviços
+* Stack sugerida:
+
+  * Python
+  * Django Rest Framework
+  * PostgreSQL
+* Comunicação:
+
+  * HTTP REST entre serviços
+* Estratégia futura:
+
+  * Preparado para mensageria (RabbitMQ/Kafka), mas NÃO implementar
+
+---
+
+## 📦 DEFINIÇÃO DOS SERVIÇOS
+
+### user-service
+
+Responsabilidades:
+
+* Cadastro de usuários
+* Autenticação
+
+Definir:
+
+* Estrutura do serviço
+* Contratos de API (request/response)
+* Campos da entidade User
+
+---
+
+### product-service
+
+Responsabilidades:
+
+* Cadastro de produtos
+* Consulta de produtos
+
+Definir:
+
+* Estrutura do serviço
+* Contratos de API
+* Campos da entidade Product
+
+---
+
+### order-service
+
+Responsabilidades:
+
+* Criação de pedidos
+* Consulta de pedidos
+
+Definir:
+
+* Estrutura do serviço
+* Contratos de API
+* Campos das entidades Order e OrderItem
+
+---
+
+## 🔗 REGRAS DE NEGÓCIO
+
+* Pedido deve consultar:
+
+  * usuário via user-service
+  * produtos via product-service
+* Validar estoque antes de criar pedido
+* Calcular total no order-service
+* Não compartilhar banco entre serviços
+
+---
+
+## 📄 PASSO 1 — ADR
+
+Gerar arquivo:
+
+docs/ADR.md
+
+Conteúdo obrigatório:
+
+* Contexto
+* Decisão (Microserviços com DRF)
+* Alternativas:
+
+  * Monólito
+  * Serverless
+* Trade-offs
+* Consequências
+* Quando essa arquitetura NÃO deve ser usada
+
+---
+
+## 📊 PASSO 2 — DIAGRAMAS (MERMAID)
+
+Gerar arquivo:
+
+docs/DIAGRAMAS.md
+
+Incluir:
+
+### 1. Diagrama ER
+
+Entidades:
+
+* User
+* Product
+* Order
+* OrderItem
+
+---
+
+### 2. Diagrama de fluxo
+
+Fluxo:
+Usuário → Busca produto → Adiciona ao carrinho → Cria pedido
+
+---
+
+### 3. Diagrama de arquitetura
+
+Mostrar:
+
+* Os 3 microserviços
+* Comunicação via HTTP
+* Bancos isolados
+
+---
+
+## 🧭 DEFINIÇÃO DE APIs (IMPORTANTE)
+
+Para cada serviço, definir endpoints no formato:
+
+* Método
+* URL
+* Request (JSON exemplo)
+* Response (JSON exemplo)
+
+---
+
+## 🗂️ ESTRUTURA DO REPOSITÓRIO
+
+Definir estrutura (sem código):
+
+/services
+/user-service
+/product-service
+/order-service
+
+/docs
+ADR.md
+DIAGRAMAS.md
+
+/frontend
+index.html
+
+---
+
+## 🎨 PASSO 3 — MOCKUP UI
+
+Gerar apenas:
+
+frontend/index.html
+
+Requisitos:
+
+* HTML + Tailwind
+* Barra de busca
+* Listagem de produtos
+* Botão "Adicionar ao carrinho"
+* Sem integração com backend (mockado)
+
+---
+
+## 🚨 QUALIDADE ESPERADA
+
+* Arquitetura realista (nível produção)
+* Decisões bem justificadas
+* APIs bem definidas
+* Diagramas claros
+* Sem código desnecessário
+
+---
+
+## 📦 ENTREGÁVEIS
+
+* docs/ADR.md
+* docs/DIAGRAMAS.md
+* Definição completa das APIs
+* Estrutura de pastas
+* frontend/index.html
+
+---
+
+Execute como um arquiteto experiente, evitando simplificações excessivas.
