@@ -1,0 +1,1 @@
+Crie um documento de produto (PRD) enxuto para o módulo de checkout. Defina o objetivo, as personas e as regras basicas de pagamento (aceitar apenas pix) e salvem em docs/PRD_CHECKOUT.md

@@ -1,0 +1,1 @@
+Gere 5 User Stories cruciais para o fluxo de compra. A partir disso escolha 2 dessas historias e escrevam os Critérios de Aceitação no formato BDD. Salvem as historias e os BDDs em BACKLOG.md
